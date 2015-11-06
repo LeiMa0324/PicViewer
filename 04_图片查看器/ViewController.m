@@ -47,12 +47,26 @@
     NSLog(@"读取图像信息");
     if (_imageList==nil) {
         NSLog(@"实例化图像数组");
-        NSDictionary *dic1=@{@"name":@"biaoqingdi",@"desc":@"表情帝1"};
-        NSDictionary *dic2=@{@"name":@"bingli",@"desc":@"病历"};
-        NSDictionary *dic3=@{@"name":@"chiniupa",@"desc":@"吃牛扒"};
-        NSDictionary *dic4=@{@"name":@"danteng",@"desc":@"蛋疼"};
-        NSDictionary *dic5=@{@"name":@"wangba",@"desc":@"王八"};
-        _imageList=@[dic1,dic2,dic3,dic4,dic5];
+        
+        //获取plist的文件路径,bundle是一个目录，mainBundle是编辑安装之后程序包的目录
+        //“包” bundle 程序名.app的目录
+
+        NSString *path=[[NSBundle mainBundle] pathForResource:@"ImageList" ofType:@"plist"];
+        NSLog(@"%@",path);  //输出文件路径
+        
+        //在OC中ContentsOfFile通常需要完整的路径
+        //目前的plist是本地的数据，该方法可以通过网络获取数据
+        _imageList=[NSArray arrayWithContentsOfFile:path];  //用plist文件的路径去初始化该数组
+        NSLog(@"%@",_imageList);
+        
+//        NSDictionary *dic1=@{@"name":@"biaoqingdi",@"desc":@"表情帝1"};
+//        NSDictionary *dic2=@{@"name":@"bingli",@"desc":@"病历"};
+//        NSDictionary *dic3=@{@"name":@"chiniupa",@"desc":@"吃牛扒"};
+//        NSDictionary *dic4=@{@"name":@"danteng",@"desc":@"蛋疼"};
+//        NSDictionary *dic5=@{@"name":@"wangba",@"desc":@"王八"};
+        
+        
+       // _imageList=@[dic1,dic2,dic3,dic4,dic5];
 
     }
     return _imageList;
@@ -95,6 +109,10 @@
     
     self.descLabel=[[UILabel alloc]initWithFrame:CGRectMake(descX, descY, descW, descH)];//设置desc的frame
     self.descLabel.textAlignment=NSTextAlignmentCenter;//设置文字居中
+    
+    //需要Label具有足够的高度，不限制文本的行数,0表示不限制行数，即自动换行
+    //默认的numberoflines是一行
+    self.descLabel.numberOfLines=0;
     
     [self.view addSubview:self.descLabel];
     
