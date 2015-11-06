@@ -22,6 +22,8 @@
 @property(nonatomic,strong) UIButton *rightBtn; //向右的button
 @property(nonatomic,strong) UILabel *descLabel; //图片描述的label
 
+@property(nonatomic,assign) int index;  //照片的索引
+
 //UIImageView是用来加载图片的控件，父类为UIView，UIImage是图片，父类是NSObject
 
 
@@ -85,6 +87,8 @@
     
     [self.view addSubview:self.leftBtn];
     
+    [self.leftBtn addTarget:self action:@selector(lastPhoto) forControlEvents:UIControlEventTouchUpInside];
+    
     
     //4、设置向右的button
     CGFloat rightW=30;
@@ -101,7 +105,122 @@
     
     [self.view addSubview:self.rightBtn];
     
+    [self.rightBtn addTarget:self action:@selector(nextPhoto) forControlEvents:UIControlEventTouchUpInside];    //建立连线。addTarget-给button添加事件
+    
 }
+
+/*按钮要实现的功能，左边按钮往前走，右边按钮往后走
+ 因此要对图片建立一个索引，类似数组的指针，点击右键就指向下一个图片（int index）
+ 
+ */
+
+//=====VERSION 1.0
+
+-(void)nextPhoto
+{
+    NSLog(@"%s",__func__);  //打印方法名
+    self.index++;   //每点击一次，index++
+    //设置序号
+    self.noLabel.text=[NSString stringWithFormat:@"%d/5",self.index+1];
+    
+    //1、使用switch进行变化图片
+    switch (self.index) {
+        case 0:
+            self.iconImage.image=[UIImage imageNamed:@"biaoqingdi"];
+            self.descLabel.text=@"表情帝";
+            NSLog(@"%d",self.index);  //打印方法名
+            break;
+        case 1:
+            self.iconImage.image=[UIImage imageNamed:@"bingli"];
+            self.descLabel.text=@"病历";
+                        NSLog(@"%d",self.index);  //打印方法名
+            break;
+        case 2:
+            self.iconImage.image=[UIImage imageNamed:@"chiniupa"];
+            self.descLabel.text=@"吃牛扒";
+            NSLog(@"%d",self.index);  //打印方法名
+            break;
+        case 3:
+            self.iconImage.image=[UIImage imageNamed:@"danteng"];
+            self.descLabel.text=@"蛋疼";
+            NSLog(@"%d",self.index);  //打印方法名
+            break;
+        case 4:
+            self.iconImage.image=[UIImage imageNamed:@"wangba"];
+            self.descLabel.text=@"王八";
+            NSLog(@"%d",self.index);  //打印方法名
+            break;
+
+    }
+    
+    
+    //控制按钮状态1
+//    if (self.index==4) {
+//        self.rightBtn.enabled=NO;
+//    }
+//    else
+//        self.rightBtn.enabled=YES;
+    
+    //控制按钮状态2
+    self.rightBtn.enabled=(self.index!=4);
+    self.leftBtn.enabled=(self.index!=0);
+}
+
+
+-(void)lastPhoto
+{
+    NSLog(@"%s",__func__);  //打印方法名
+    self.index--;   //每点击一次，index++
+    //设置序号
+    self.noLabel.text=[NSString stringWithFormat:@"%d/5",self.index+1];
+    
+    //1、使用switch进行变化图片
+    switch (self.index) {
+        case 0:
+            self.iconImage.image=[UIImage imageNamed:@"biaoqingdi"];
+            self.descLabel.text=@"表情帝";
+            NSLog(@"%d",self.index);  //打印方法名
+            break;
+        case 1:
+            self.iconImage.image=[UIImage imageNamed:@"bingli"];
+            self.descLabel.text=@"病历";
+            NSLog(@"%d",self.index);  //打印方法名
+            break;
+        case 2:
+            self.iconImage.image=[UIImage imageNamed:@"chiniupa"];
+            self.descLabel.text=@"吃牛扒";
+            NSLog(@"%d",self.index);  //打印方法名
+            break;
+        case 3:
+            self.iconImage.image=[UIImage imageNamed:@"danteng"];
+            self.descLabel.text=@"蛋疼";
+            NSLog(@"%d",self.index);  //打印方法名
+            break;
+        case 4:
+            self.iconImage.image=[UIImage imageNamed:@"wangba"];
+            self.descLabel.text=@"王八";
+            NSLog(@"%d",self.index);  //打印方法名
+            break;
+            
+    }
+    
+    
+    //控制按钮状态1
+    //    if (self.index==4) {
+    //        self.rightBtn.enabled=NO;
+    //    }
+    //    else
+    //        self.rightBtn.enabled=YES;
+    
+    //控制按钮状态2
+    self.leftBtn.enabled=(self.index!=0);
+    self.rightBtn.enabled=(self.index!=4);
+}
+
+
+
+
+
 
 
 
