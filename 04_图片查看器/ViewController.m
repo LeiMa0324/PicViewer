@@ -155,35 +155,54 @@
     //设置序号
     self.noLabel.text=[NSString stringWithFormat:@"%d/5",self.index+1];
     
-    //1、使用switch进行变化图片
-    switch (self.index) {
-        case 0:
-            self.iconImage.image=[UIImage imageNamed:@"biaoqingdi"];
-            self.descLabel.text=@"表情帝";
-            NSLog(@"%d",self.index);  //打印方法名
-            break;
-        case 1:
-            self.iconImage.image=[UIImage imageNamed:@"bingli"];
-            self.descLabel.text=@"病历";
-            NSLog(@"%d",self.index);  //打印方法名
-            break;
-        case 2:
-            self.iconImage.image=[UIImage imageNamed:@"chiniupa"];
-            self.descLabel.text=@"吃牛扒";
-            NSLog(@"%d",self.index);  //打印方法名
-            break;
-        case 3:
-            self.iconImage.image=[UIImage imageNamed:@"danteng"];
-            self.descLabel.text=@"蛋疼";
-            NSLog(@"%d",self.index);  //打印方法名
-            break;
-        case 4:
-            self.iconImage.image=[UIImage imageNamed:@"wangba"];
-            self.descLabel.text=@"王八";
-            NSLog(@"%d",self.index);  //打印方法名
-            break;
-            
-    }
+    //设置序号
+    
+    NSDictionary *dic1=@{@"name":@"biaoqingdi",@"desc":@"表情帝1"};
+    NSDictionary *dic2=@{@"name":@"bingli",@"desc":@"病历"};
+    NSDictionary *dic3=@{@"name":@"chiniupa",@"desc":@"吃牛扒"};
+    NSDictionary *dic4=@{@"name":@"danteng",@"desc":@"蛋疼"};
+    NSDictionary *dic5=@{@"name":@"wangba",@"desc":@"王八"};
+    
+    NSArray *array=@[dic1,dic2,dic3,dic4,dic5];
+    
+    //设置图片和描述，用数组取代switch
+    
+    self.iconImage.image=[UIImage imageNamed:array[self.index][@"name"]];//用array中第index个元素的name取出图片名称
+    self.descLabel.text=array[self.index][@"desc"];
+    
+    
+    
+    
+    
+//    //1、使用switch进行变化图片
+//    switch (self.index) {
+//        case 0:
+//            self.iconImage.image=[UIImage imageNamed:@"biaoqingdi"];
+//            self.descLabel.text=@"表情帝";
+//            NSLog(@"%d",self.index);  //打印方法名
+//            break;
+//        case 1:
+//            self.iconImage.image=[UIImage imageNamed:@"bingli"];
+//            self.descLabel.text=@"病历";
+//            NSLog(@"%d",self.index);  //打印方法名
+//            break;
+//        case 2:
+//            self.iconImage.image=[UIImage imageNamed:@"chiniupa"];
+//            self.descLabel.text=@"吃牛扒";
+//            NSLog(@"%d",self.index);  //打印方法名
+//            break;
+//        case 3:
+//            self.iconImage.image=[UIImage imageNamed:@"danteng"];
+//            self.descLabel.text=@"蛋疼";
+//            NSLog(@"%d",self.index);  //打印方法名
+//            break;
+//        case 4:
+//            self.iconImage.image=[UIImage imageNamed:@"wangba"];
+//            self.descLabel.text=@"王八";
+//            NSLog(@"%d",self.index);  //打印方法名
+//            break;
+    
+//    }
     
     
     //控制按钮状态1
