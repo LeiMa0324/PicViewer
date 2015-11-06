@@ -39,7 +39,7 @@
     //1、设置nolabel
     self.noLabel=[[UILabel alloc]initWithFrame:CGRectMake(0, 20, self.view.frame.size.width,40 )];
     //设置label的frame
-    self.noLabel.text=@"1/5";//设置text内容
+  //  self.noLabel.text=@"1/5";//设置text内容
     self.noLabel.textAlignment=NSTextAlignmentCenter;   //设置text居中
     self.noLabel.backgroundColor=[UIColor whiteColor];    //设置背景颜色为白色
     [self.view addSubview:self.noLabel];//加到界面上
@@ -52,7 +52,7 @@
     CGFloat imageY=CGRectGetMaxY(self.noLabel.frame)+20;  //通过上面的label获取image的最大Y，再往下下一点
     self.iconImage=[[UIImageView alloc]initWithFrame:CGRectMake(imageX, imageY, imageW, imageH)];
     
-    self.iconImage.image=[UIImage imageNamed:@"biaoqingdi"];  //用imagenamed找到相应的image
+    //self.iconImage.image=[UIImage imageNamed:@"biaoqingdi"];  //用imagenamed找到相应的image
     
     
     
@@ -66,7 +66,6 @@
     CGFloat descH=100;
     
     self.descLabel=[[UILabel alloc]initWithFrame:CGRectMake(descX, descY, descW, descH)];//设置desc的frame
-    self.descLabel.text=@"你瞅啥";//设置desc的文字
     self.descLabel.textAlignment=NSTextAlignmentCenter;//设置文字居中
     
     [self.view addSubview:self.descLabel];
@@ -85,9 +84,14 @@
     [self.leftBtn setBackgroundImage:[UIImage imageNamed:@"left_highlighted"] forState:UIControlStateHighlighted ];
     //设置高亮情况下的background图片
     
+    self.leftBtn.tag=0; //设置左边button的tag为0
+    
     [self.view addSubview:self.leftBtn];
     
-    [self.leftBtn addTarget:self action:@selector(lastPhoto) forControlEvents:UIControlEventTouchUpInside];
+    [self.leftBtn addTarget:self action:@selector(clickbutton: )forControlEvents:UIControlEventTouchUpInside];
+    //@selector()中只需要写方法名，无需写参数
+    
+
     
     
     //4、设置向右的button
@@ -103,9 +107,13 @@
     [self.leftBtn setBackgroundImage:[UIImage imageNamed:@"right_highlighted"] forState:UIControlStateHighlighted ];
     //设置高亮情况下的background图片
     
+    self.leftBtn.tag=1; //设置右边button的tag为1
+    
     [self.view addSubview:self.rightBtn];
     
-    [self.rightBtn addTarget:self action:@selector(nextPhoto) forControlEvents:UIControlEventTouchUpInside];    //建立连线。addTarget-给button添加事件
+    [self.rightBtn addTarget:self action:@selector(clickbutton:) forControlEvents:UIControlEventTouchUpInside];    //建立连线。addTarget-给button添加事件
+    
+    [self showPhoto];   //一开始显示照片信息，用于消除开始时左键可以按的bug
     
 }
 
@@ -114,8 +122,85 @@
  
  */
 
-//=====VERSION 1.0
+//=====VERSION 2.0
+/*重构的目的是让相同的代码只出现一次，提取出共同的代码作为showPhoto
 
+// */
+//-(void)nextPhoto
+//{
+//    NSLog(@"%s",__func__);  //打印方法名
+//    self.index++;   //每点击一次，index++
+//    [self showPhoto];//调用showphoto方法
+//}
+//
+//-(void)lastPhoto
+//{
+//    NSLog(@"%s",__func__);  //打印方法名
+//    self.index--;   //每点击一次，index++
+//    [self showPhoto];
+//}
+
+//将左右photo集成为clickbutton共同处理
+-(void)clickbutton:(UIButton *)button
+{
+    
+    (button.tag==0)?self.index++:self.index--;
+    [self showPhoto];
+}
+
+
+-(void)showPhoto
+{
+
+    //设置序号
+    self.noLabel.text=[NSString stringWithFormat:@"%d/5",self.index+1];
+    
+    //1、使用switch进行变化图片
+    switch (self.index) {
+        case 0:
+            self.iconImage.image=[UIImage imageNamed:@"biaoqingdi"];
+            self.descLabel.text=@"表情帝";
+            NSLog(@"%d",self.index);  //打印方法名
+            break;
+        case 1:
+            self.iconImage.image=[UIImage imageNamed:@"bingli"];
+            self.descLabel.text=@"病历";
+            NSLog(@"%d",self.index);  //打印方法名
+            break;
+        case 2:
+            self.iconImage.image=[UIImage imageNamed:@"chiniupa"];
+            self.descLabel.text=@"吃牛扒";
+            NSLog(@"%d",self.index);  //打印方法名
+            break;
+        case 3:
+            self.iconImage.image=[UIImage imageNamed:@"danteng"];
+            self.descLabel.text=@"蛋疼";
+            NSLog(@"%d",self.index);  //打印方法名
+            break;
+        case 4:
+            self.iconImage.image=[UIImage imageNamed:@"wangba"];
+            self.descLabel.text=@"王八";
+            NSLog(@"%d",self.index);  //打印方法名
+            break;
+            
+    }
+    
+    
+    //控制按钮状态1
+    //    if (self.index==4) {
+    //        self.rightBtn.enabled=NO;
+    //    }
+    //    else
+    //        self.rightBtn.enabled=YES;
+    
+    //控制按钮状态2
+    self.rightBtn.enabled=(self.index!=4);
+    self.leftBtn.enabled=(self.index!=0);
+}
+
+
+//=====VERSION 1.0
+/*
 -(void)nextPhoto
 {
     NSLog(@"%s",__func__);  //打印方法名
@@ -218,7 +303,7 @@
 }
 
 
-
+*/
 
 
 
