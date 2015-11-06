@@ -24,6 +24,8 @@
 
 @property(nonatomic,assign) int index;  //照片的索引
 
+@property(nonatomic,strong) NSArray *imageList;  //存放照片信息的数组
+
 //UIImageView是用来加载图片的控件，父类为UIView，UIImage是图片，父类是NSObject
 
 
@@ -32,6 +34,32 @@
 @end
 
 @implementation ViewController
+
+/*懒加载，通过getter实现
+ 效果：让对象在最需要的时候才出现，解决代码前后顺序依赖问题
+ */
+
+
+//重写了imagelist的get方法，在第一次调用该属性的时候，才开始实例化该属性，如果已经实例化过，则直接跳出
+
+-(NSArray *)imageList
+{
+    NSLog(@"读取图像信息");
+    if (_imageList==nil) {
+        NSLog(@"实例化图像数组");
+        NSDictionary *dic1=@{@"name":@"biaoqingdi",@"desc":@"表情帝1"};
+        NSDictionary *dic2=@{@"name":@"bingli",@"desc":@"病历"};
+        NSDictionary *dic3=@{@"name":@"chiniupa",@"desc":@"吃牛扒"};
+        NSDictionary *dic4=@{@"name":@"danteng",@"desc":@"蛋疼"};
+        NSDictionary *dic5=@{@"name":@"wangba",@"desc":@"王八"};
+        _imageList=@[dic1,dic2,dic3,dic4,dic5];
+
+    }
+    return _imageList;
+}
+
+
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -113,32 +141,26 @@
     
     [self.rightBtn addTarget:self action:@selector(clickbutton:) forControlEvents:UIControlEventTouchUpInside];    //建立连线。addTarget-给button添加事件
     
-    [self showPhoto];   //一开始显示照片信息，用于消除开始时左键可以按的bug
+
+    
+    
+    //5、定义照片字典与数组
+//        NSDictionary *dic1=@{@"name":@"biaoqingdi",@"desc":@"表情帝1"};
+//        NSDictionary *dic2=@{@"name":@"bingli",@"desc":@"病历"};
+//        NSDictionary *dic3=@{@"name":@"chiniupa",@"desc":@"吃牛扒"};
+//        NSDictionary *dic4=@{@"name":@"danteng",@"desc":@"蛋疼"};
+//        NSDictionary *dic5=@{@"name":@"wangba",@"desc":@"王八"};
+//        self.imageList=@[dic1,dic2,dic3,dic4,dic5];
+    
+        [self showPhoto];   //一开始显示照片信息
+        //代码的先后顺序存在依赖，如果该句在字典前面，则一开始不显示图片，使用懒加载解决
     
 }
 
-/*按钮要实现的功能，左边按钮往前走，右边按钮往后走
- 因此要对图片建立一个索引，类似数组的指针，点击右键就指向下一个图片（int index）
- 
- */
+
 
 //=====VERSION 2.0
-/*重构的目的是让相同的代码只出现一次，提取出共同的代码作为showPhoto
 
-// */
-//-(void)nextPhoto
-//{
-//    NSLog(@"%s",__func__);  //打印方法名
-//    self.index++;   //每点击一次，index++
-//    [self showPhoto];//调用showphoto方法
-//}
-//
-//-(void)lastPhoto
-//{
-//    NSLog(@"%s",__func__);  //打印方法名
-//    self.index--;   //每点击一次，index++
-//    [self showPhoto];
-//}
 
 //将左右photo集成为clickbutton共同处理
 -(void)clickbutton:(UIButton *)button
@@ -146,6 +168,7 @@
     
     (button.tag==0)?self.index++:self.index--;
     [self showPhoto];
+    
 }
 
 
@@ -156,173 +179,26 @@
     self.noLabel.text=[NSString stringWithFormat:@"%d/5",self.index+1];
     
     //设置序号
-    
-    NSDictionary *dic1=@{@"name":@"biaoqingdi",@"desc":@"表情帝1"};
-    NSDictionary *dic2=@{@"name":@"bingli",@"desc":@"病历"};
-    NSDictionary *dic3=@{@"name":@"chiniupa",@"desc":@"吃牛扒"};
-    NSDictionary *dic4=@{@"name":@"danteng",@"desc":@"蛋疼"};
-    NSDictionary *dic5=@{@"name":@"wangba",@"desc":@"王八"};
-    
-    NSArray *array=@[dic1,dic2,dic3,dic4,dic5];
+//    效率太低，每次调用都要创建和删除字典和数组
+//    如何解决？定义property
+//    NSDictionary *dic1=@{@"name":@"biaoqingdi",@"desc":@"表情帝1"};
+//    NSDictionary *dic2=@{@"name":@"bingli",@"desc":@"病历"};
+//    NSDictionary *dic3=@{@"name":@"chiniupa",@"desc":@"吃牛扒"};
+//    NSDictionary *dic4=@{@"name":@"danteng",@"desc":@"蛋疼"};
+//    NSDictionary *dic5=@{@"name":@"wangba",@"desc":@"王八"};
+//    
+//    NSArray *array=@[dic1,dic2,dic3,dic4,dic5];
     
     //设置图片和描述，用数组取代switch
     
-    self.iconImage.image=[UIImage imageNamed:array[self.index][@"name"]];//用array中第index个元素的name取出图片名称
-    self.descLabel.text=array[self.index][@"desc"];
+    self.iconImage.image=[UIImage imageNamed:self.imageList[self.index][@"name"]];//用array中第index个元素的name取出图片名称
+    self.descLabel.text=self.imageList[self.index][@"desc"];
     
-    
-    
-    
-    
-//    //1、使用switch进行变化图片
-//    switch (self.index) {
-//        case 0:
-//            self.iconImage.image=[UIImage imageNamed:@"biaoqingdi"];
-//            self.descLabel.text=@"表情帝";
-//            NSLog(@"%d",self.index);  //打印方法名
-//            break;
-//        case 1:
-//            self.iconImage.image=[UIImage imageNamed:@"bingli"];
-//            self.descLabel.text=@"病历";
-//            NSLog(@"%d",self.index);  //打印方法名
-//            break;
-//        case 2:
-//            self.iconImage.image=[UIImage imageNamed:@"chiniupa"];
-//            self.descLabel.text=@"吃牛扒";
-//            NSLog(@"%d",self.index);  //打印方法名
-//            break;
-//        case 3:
-//            self.iconImage.image=[UIImage imageNamed:@"danteng"];
-//            self.descLabel.text=@"蛋疼";
-//            NSLog(@"%d",self.index);  //打印方法名
-//            break;
-//        case 4:
-//            self.iconImage.image=[UIImage imageNamed:@"wangba"];
-//            self.descLabel.text=@"王八";
-//            NSLog(@"%d",self.index);  //打印方法名
-//            break;
-    
-//    }
-    
-    
-    //控制按钮状态1
-    //    if (self.index==4) {
-    //        self.rightBtn.enabled=NO;
-    //    }
-    //    else
-    //        self.rightBtn.enabled=YES;
     
     //控制按钮状态2
     self.rightBtn.enabled=(self.index!=4);
     self.leftBtn.enabled=(self.index!=0);
 }
-
-
-//=====VERSION 1.0
-/*
--(void)nextPhoto
-{
-    NSLog(@"%s",__func__);  //打印方法名
-    self.index++;   //每点击一次，index++
-    //设置序号
-    self.noLabel.text=[NSString stringWithFormat:@"%d/5",self.index+1];
-    
-    //1、使用switch进行变化图片
-    switch (self.index) {
-        case 0:
-            self.iconImage.image=[UIImage imageNamed:@"biaoqingdi"];
-            self.descLabel.text=@"表情帝";
-            NSLog(@"%d",self.index);  //打印方法名
-            break;
-        case 1:
-            self.iconImage.image=[UIImage imageNamed:@"bingli"];
-            self.descLabel.text=@"病历";
-                        NSLog(@"%d",self.index);  //打印方法名
-            break;
-        case 2:
-            self.iconImage.image=[UIImage imageNamed:@"chiniupa"];
-            self.descLabel.text=@"吃牛扒";
-            NSLog(@"%d",self.index);  //打印方法名
-            break;
-        case 3:
-            self.iconImage.image=[UIImage imageNamed:@"danteng"];
-            self.descLabel.text=@"蛋疼";
-            NSLog(@"%d",self.index);  //打印方法名
-            break;
-        case 4:
-            self.iconImage.image=[UIImage imageNamed:@"wangba"];
-            self.descLabel.text=@"王八";
-            NSLog(@"%d",self.index);  //打印方法名
-            break;
-
-    }
-    
-    
-    //控制按钮状态1
-//    if (self.index==4) {
-//        self.rightBtn.enabled=NO;
-//    }
-//    else
-//        self.rightBtn.enabled=YES;
-    
-    //控制按钮状态2
-    self.rightBtn.enabled=(self.index!=4);
-    self.leftBtn.enabled=(self.index!=0);
-}
-
-
--(void)lastPhoto
-{
-    NSLog(@"%s",__func__);  //打印方法名
-    self.index--;   //每点击一次，index++
-    //设置序号
-    self.noLabel.text=[NSString stringWithFormat:@"%d/5",self.index+1];
-    
-    //1、使用switch进行变化图片
-    switch (self.index) {
-        case 0:
-            self.iconImage.image=[UIImage imageNamed:@"biaoqingdi"];
-            self.descLabel.text=@"表情帝";
-            NSLog(@"%d",self.index);  //打印方法名
-            break;
-        case 1:
-            self.iconImage.image=[UIImage imageNamed:@"bingli"];
-            self.descLabel.text=@"病历";
-            NSLog(@"%d",self.index);  //打印方法名
-            break;
-        case 2:
-            self.iconImage.image=[UIImage imageNamed:@"chiniupa"];
-            self.descLabel.text=@"吃牛扒";
-            NSLog(@"%d",self.index);  //打印方法名
-            break;
-        case 3:
-            self.iconImage.image=[UIImage imageNamed:@"danteng"];
-            self.descLabel.text=@"蛋疼";
-            NSLog(@"%d",self.index);  //打印方法名
-            break;
-        case 4:
-            self.iconImage.image=[UIImage imageNamed:@"wangba"];
-            self.descLabel.text=@"王八";
-            NSLog(@"%d",self.index);  //打印方法名
-            break;
-            
-    }
-    
-    
-    //控制按钮状态1
-    //    if (self.index==4) {
-    //        self.rightBtn.enabled=NO;
-    //    }
-    //    else
-    //        self.rightBtn.enabled=YES;
-    
-    //控制按钮状态2
-    self.leftBtn.enabled=(self.index!=0);
-    self.rightBtn.enabled=(self.index!=4);
-}
-
-
-*/
 
 
 
